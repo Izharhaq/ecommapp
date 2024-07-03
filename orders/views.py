@@ -46,7 +46,7 @@ class OrderView(APIView):
         except Order.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
-        serializer = OrderSerializer(order, data=request.data, partial=True) # partial = True for updating data
+        serializer = OrderSerializer(order, data=request.data, partial=True) # partial = True for updating data(it won't create a new entry in db)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
