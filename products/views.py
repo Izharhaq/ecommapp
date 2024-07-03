@@ -31,7 +31,7 @@ class ProductView(APIView):
         # Create a new product
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(owner=request.user)     #Automatically sets the current user as the owner
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
