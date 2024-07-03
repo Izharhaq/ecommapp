@@ -2,17 +2,17 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from .models import Product
 from .serializers import ProductSerializer
 from accounts.utils import CsrfExemptSessionAuthentication
 from rest_framework import status
+from accounts.permissions import IsReadAndEdit
 
 
 
 
 class ProductView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsReadAndEdit]
 
     def get(self, request, pk=None, format=None):
         if pk:
@@ -55,6 +55,8 @@ class ProductView(APIView):
 
     def delete(self, request, pk, format=None):
         # Delete a product
+        if not request.user.role_id == 3:
+            return Response({"message": "Permission denied"}, status=status.HTTP_403_FORBIDDEN)
         try:
             product = Product.objects.get(pk=pk)
             product.delete()

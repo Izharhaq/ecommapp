@@ -1,17 +1,16 @@
 from django.shortcuts import render
-
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from .models import Order
 from .serializers import OrderSerializer
 from accounts.utils import CsrfExemptSessionAuthentication
+from accounts.permissions import IsReadAndEdit
 
 
 
 class OrderView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsReadAndEdit]
     
     def get(self, request, pk=None, format=None):
         if pk:
@@ -54,6 +53,9 @@ class OrderView(APIView):
 
     def delete(self, request, pk, format=None):
         # Delete an order
+        if not request.user.role_id == 3:
+            return Response({"detail": "Permission denied"}, status=status.HTTP_403_FORBIDDEN)
+
         try:
             order = Order.objects.get(pk=pk)
             order.delete()
