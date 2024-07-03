@@ -21,7 +21,7 @@ class OrderView(APIView):
                 serializer = OrderSerializer(order)
                 return Response(serializer.data)
             except Order.DoesNotExist:
-                return Response(status=status.HTTP_404_NOT_FOUND)
+                return Response({"message": "order not found"}, status=status.HTTP_404_NOT_FOUND)
         else:
             # List all orders
             orders = Order.objects.all()

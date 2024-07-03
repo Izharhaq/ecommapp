@@ -6,6 +6,9 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Product
 from .serializers import ProductSerializer
 from accounts.utils import CsrfExemptSessionAuthentication
+from rest_framework import status
+
+
 
 
 class ProductView(APIView):
@@ -19,7 +22,8 @@ class ProductView(APIView):
                 serializer = ProductSerializer(product)
                 return Response(serializer.data)
             except Product.DoesNotExist:
-                return Response(status=status.HTTP_404_NOT_FOUND)
+                return Response({"message": "product not found"}, status=status.HTTP_404_NOT_FOUND)
+            
         else:
             # List all products
             products = Product.objects.all()
