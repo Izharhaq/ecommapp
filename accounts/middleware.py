@@ -4,6 +4,10 @@ from django.utils.deprecation import MiddlewareMixin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from accounts.utils import is_api_open, validate_jwt_token
+from .models import TokenBlacklist
+from rest_framework import status
+from django.http import JsonResponse
+
 
 class JWTAuthenticationMiddleware(MiddlewareMixin):
     def process_request(self, request):
@@ -25,16 +29,10 @@ class JWTAuthenticationMiddleware(MiddlewareMixin):
         else:
             request.user = AnonymousUser()
 
-# class AuthenticationAuthorisationMiddleware(object):
-#     def __init__(self, get_response):
-#         self.get_response = get_response
-#         self.is_valid = False
-#         self.jwt = False
-#         self.role = None
-
-
-#     def __call__(self, request):
-#         if not is_api_open(request):
-#             self.jwt = request.META.get('HTTP_AUTHORIZATION', None)
-#             self.is_valid = validate_jwt_token(self.jwt)
-
+class TokenBlacklistMiddleware(MiddlewareMixin):
+    def process_request(self, request):
+        auth_header = request.headers.get('Authorization', None)
+        if auth_header:
+            token = auth_header.split(' ')[1]
+            if TokenBlacklist.objects.filter(token=token).exists():
+                return JsonResponse({"error": "Token is blacklisted"}, status=status.HTTP_401_UNAUTHORIZED)
