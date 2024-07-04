@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import UserLoginSerializer, UserRegisterSerializer
 from accounts.utils import generate_jwt_token
-# from accounts.utils import generate_admin_token
+from .permissions import IsAdminUser
 from rest_framework.permissions import IsAuthenticated
 from accounts.utils import CsrfExemptSessionAuthentication
 
@@ -53,13 +53,10 @@ class LogoutView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
-
-
     
 class UserRegisterView(APIView):
     authentication_classes = (CsrfExemptSessionAuthentication,)
+    permission_classes = [IsAuthenticated, IsAdminUser]
     def post(self, request, *args, **kwargs):
         serializer = UserRegisterSerializer(data=request.data)
         if serializer.is_valid():

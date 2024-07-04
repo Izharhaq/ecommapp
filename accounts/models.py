@@ -8,14 +8,14 @@ from ecommapp.settings import JWT_EXPIRY_TIME
     
 class MyUser(AbstractUser):
     ROLE_CHOICES = [
-        (1, 'Read Only'),
-        (2, 'Read and Edit'),
-        (3, 'Admin'),
+        ('reader', 'Read Only'),
+        ('editor', 'Read and Edit'),
+        ('admin', 'Admin'),
     ]
 
-    role_id = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, default=1)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     username=models.CharField(max_length=50, unique=True)
-    first_name=models.CharField(max_length=5)
+    first_name=models.CharField(max_length=50)
     last_name=models.CharField(max_length=50, null=True, blank=True)
     password=models.CharField(max_length=100, null=True, blank=True)
     is_active=models.BooleanField(default=True)

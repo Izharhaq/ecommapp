@@ -55,7 +55,7 @@ class ProductView(APIView):
 
     def delete(self, request, pk, format=None):
         # Delete a product
-        if not request.user.role_id == 3:
+        if not request.user.role == 'admin':
             return Response({"message": "Permission denied"}, status=status.HTTP_403_FORBIDDEN)
         try:
             product = Product.objects.get(pk=pk)
