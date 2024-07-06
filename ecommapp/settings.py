@@ -55,8 +55,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'accounts.middleware.JWTAuthenticationMiddleware',
     'accounts.middleware.TokenBlacklistMiddleware',
-    # 'accounts.middleware.AuthenticationAuthorisationMiddleware',
-    # 'accounts.middleware.CSRFMiddleware'
 ]
 
 ROOT_URLCONF = 'ecommapp.urls'
@@ -94,17 +92,17 @@ REST_FRAMEWORK = {
     "DATETIME_FORMAT": "%d-%m-%Y %H:%M:%S",
 }
 
-SWAGGER_SETTINGS = {
-    'is_superuser': True,
-    'SECURITY_DEFINITIONS': {
-        'Bearer': {
-            "type": "apiKey",
-            "in": "header",
-            "name": "Authorization",
-            "bearerFormat": "JWT",
-        }
-    }
-}
+# SWAGGER_SETTINGS = {
+#     'is_superuser': True,
+#     'SECURITY_DEFINITIONS': {
+#         'Bearer': {
+#             "type": "apiKey",
+#             "in": "header",
+#             "name": "Authorization",
+#             "bearerFormat": "JWT",
+#         }
+#     }
+# }
 
 AUTH_USER_MODEL = "accounts.MyUser"
 
@@ -120,6 +118,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
@@ -131,6 +130,16 @@ DATABASES = {
 #     }
 # }
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "myproject",
+#         "USER": "myprojectuser",
+#         "PASSWORD": "password",
+#         "HOST": "localhost",
+#         "PORT": 5432,
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
