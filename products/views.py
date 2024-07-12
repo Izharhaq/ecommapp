@@ -7,12 +7,13 @@ from .serializers import ProductSerializer
 from accounts.utils import CsrfExemptSessionAuthentication
 from rest_framework import status
 from accounts.permissions import IsReadAndEdit
+from rest_framework.permissions import IsAuthenticated
 
 
 
 
 class ProductView(APIView):
-    permission_classes = [IsReadAndEdit]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, pk=None, format=None):
         if pk:
@@ -32,20 +33,24 @@ class ProductView(APIView):
 
     authentication_classes = (CsrfExemptSessionAuthentication,)
     def post(self, request, format=None):
+        if not request.user.role == 'admin':
+            return Response({'msg':'permission denied to add a product'}, status=status.HTTP_403_FORBIDDEN)
         # Create a new product
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(owner=request.user)     #Automatically sets the current user as the owner
+            serializer.save(user=request.user) 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
     def put(self, request, pk, format=None):
+        if not request.user.role == 'admin':
+            return Response({'msg':'permission denied to change product details'}, status=status.HTTP_403_FORBIDDEN)
         # Update an existing product
         try:
             product = Product.objects.get(pk=pk)
         except Product.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response({'msg':'product not found !'},status=status.HTTP_404_NOT_FOUND)
         
         serializer = ProductSerializer(product, data=request.data, partial=True)
         if serializer.is_valid():

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Product
 
+'''
 class ProductSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_admin = serializers.SerializerMethodField()
@@ -12,3 +13,9 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_is_admin(self, obj):
         return obj.owner.is_staff or obj.owner.is_superuser
+'''
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'description', 'price']

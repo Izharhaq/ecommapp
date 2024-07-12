@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'drf_yasg',
     'guardian',
     'accounts',
     'products',
@@ -53,8 +54,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'accounts.middleware.JWTAuthenticationMiddleware',
-    'accounts.middleware.TokenBlacklistMiddleware',
+    # 'accounts.middleware.JWTAuthenticationMiddleware',
+    "accounts.middleware.AuthenticationAuthorisationMiddleware",
+    'accounts.middleware.TokenExpiredMiddleware',
 ]
 
 ROOT_URLCONF = 'ecommapp.urls'
@@ -184,5 +186,43 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 JWT_SECRET = SECRET_KEY
 JWT_ALGORITHM = 'HS256'
-JWT_EXPIRY_TIME = 3500  # in minutes
-JWT_TOKEN_ROTATE_TIME = 500  # in minutes
+# JWT_EXPIRY_TIME = 3500  # in minutes
+# JWT_TOKEN_ROTATE_TIME = 500  # in minutes
+JWT_EXPIRY_TIME = 1125  # in minutes
+JWT_TOKEN_ROTATE_TIME = 3  # in minutes
+USER_ONLINE_TIME = 5  # in minutes
+
+OPEN_API = {
+    "login": 1,
+    "admin": 1,
+    "signup":1,
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            # 'format': '{levelname}::{asctime} {pathname} {funcName} {lineno} {message}',
+            'format': '{levelname}::{asctime} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/tmp/debug.log',
+            'formatter': 'verbose'
+        },
+    },
+    'root': {
+        'handlers': ['file', 'console'],
+        'level': 'DEBUG'
+},
+}

@@ -5,7 +5,7 @@ class IsReadAndEdit(BasePermission):
         user = request.user
         # Superuser has full access
         if user.is_superuser:
-            return user.role in ['reader','editor', 'admin']
+            return user.role in ['user', 'admin']
 
         if user.is_authenticated:
             # Read-only permissions
@@ -14,7 +14,7 @@ class IsReadAndEdit(BasePermission):
 
             # Edit permissions (POST, PUT, PATCH)
             if request.method in ['POST', 'PUT', 'PATCH']:
-                return user.role in ['editor', 'admin']  # Allow editing for 'editor' and 'admin' roles
+                return user.role in ['user', 'admin']  # Allow editing for 'editor' and 'admin' roles
 
             # Delete permissions
             if request.method == 'DELETE':

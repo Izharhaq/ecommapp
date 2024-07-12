@@ -8,6 +8,37 @@ from django.contrib.auth.models import Permission
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 
+class UserSerializer(serializers.ModelSerializer):
+    role = serializers.SerializerMethodField(read_only=True)
+    full_name = serializers.SerializerMethodField(read_only=True)
+    date_joined = serializers.SerializerMethodField()
+    last_login = serializers.SerializerMethodField()
+    last_logged_in_time = serializers.SerializerMethodField()
+    last_logout_time = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
+
+    checker = {"": "-"}
+
+    class Meta:
+        model = MyUser
+        fields = [
+            "username",
+            "email",
+            "password",
+            "role",
+            "full_name",
+            "last_login",
+            "date_joined",
+            "last_logout_time",
+            "first_name",
+            "phone_num",
+            "is_active",
+            "last_logged_in_time",
+          
+        ]
+
+
+
 class UserLoginSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=255, write_only=True)
     password = serializers.CharField(max_length=128, write_only=True)
